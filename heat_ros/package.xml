@@ -11,7 +11,6 @@
   <depend>actionlib</depend>
   <depend>heat_msgs</depend>
   <depend>libgeodesic</depend>
-  <depend>suitesparse</depend>
   <depend>smooth_pose_traj</depend>
   <!--depend>tool_path_planner</depend-->
   

@@ -11,7 +11,6 @@ find_package(libgeodesic REQUIRED)
 ## Find catkin macros and libraries
 
 find_package(catkin REQUIRED COMPONENTS
-  suitesparse
   actionlib
   cmake_modules
   geometry_msgs
@@ -38,7 +37,6 @@ catkin_package(
     actionlib
     heat_msgs
     roscpp
-    suitesparse
     smooth_pose_traj
   DEPENDS
     VTK

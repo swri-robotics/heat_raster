@@ -25,8 +25,8 @@ public:
 
   bool smoothPoseTrajCB(smooth_pose_traj::SmoothPoseTrajectory::Request& req, smooth_pose_traj::SmoothPoseTrajectory::Response& res)
   {
-    SmoothPoseTraj::SmoothPoseTraj SPT(req.input_poses, req.pt_spacing);
-    return(SPT.process(res.output_poses, req.pt_spacing));
+    SmoothPoseTraj::SmoothPoseTraj SPT(req.input_poses, req.point_spacing);
+    return(SPT.process(res.output_poses, req.point_spacing));
   }
   ros::ServiceServer smooth_pose_traj_srv_;
   ros::NodeHandle nh_;
