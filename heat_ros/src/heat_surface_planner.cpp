@@ -70,14 +70,14 @@ void HeatSurfacePlanner::planPaths(const shape_msgs::Mesh& mesh,
     {
       Eigen::Vector3d N;
       double D;
-      getCuttingPlane(mesh, config_.raster_angle, N, D);
+      getCuttingPlane(mesh, config_.raster_rot_offset, N, D);
       
       // Create a new sources vector that contains all points within a small distance from this plane
       int num_source_verts=0;
       for(int i=0; i<(int)mesh.vertices.size(); i++)
 	{
 	  double d = N.x()*mesh.vertices[i].x + N.y()*mesh.vertices[i].y + N.z()*mesh.vertices[i].z -D;
-	  if(fabs(d)<config_.line_spacing/7.0)
+	  if(fabs(d)<config_.raster_spacing/7.0)
 	    {
 	      num_source_verts++;
 	      distance_.isSource.values[i] = 1.0;
@@ -102,7 +102,7 @@ void HeatSurfacePlanner::planPaths(const shape_msgs::Mesh& mesh,
   }
   // calculate the distances
   hmTriDistanceUpdate( &distance_ );
-  hmTriHeatPaths THP(&distance_, config_.line_spacing);
+  hmTriHeatPaths THP(&distance_, config_.raster_spacing);
 
   THP.compute(&distance_, local_source_indices);
   
@@ -147,6 +147,7 @@ bool HeatSurfacePlanner::getCellCentroidData(const shape_msgs::Mesh& mesh, const
   center.x() = (pt1.x + pt2.x + pt3.x)/3.0;
   center.y() = (pt1.y + pt2.y + pt3.y)/3.0;
   center.z() = (pt1.z + pt2.z + pt3.z)/3.0;
+  return(true);
 }// end of getCellCentroidData()
 
 bool HeatSurfacePlanner::getCuttingPlane(const shape_msgs::Mesh& mesh, const double raster_angle, Eigen::Vector3d& N, double &D)
@@ -210,6 +211,6 @@ bool HeatSurfacePlanner::getCuttingPlane(const shape_msgs::Mesh& mesh, const dou
       D = N.x()*C.x() + N.y()*C.y() + N.z()*C.z();
       if(DEBUG_CUT_AXIS)
 	printf("Plane equation %6.3lfx %6.3lfy %6.3lfz = %6.3lf\n",N[0],N[1],N[2],D);
-
+      return(true);
 }
 }// end of namespace heat

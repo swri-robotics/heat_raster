@@ -1,4 +1,4 @@
-float64 pt_spacing
+float64 point_spacing
 geometry_msgs/PoseArray input_poses
 ---
 geometry_msgs/PoseArray output_poses

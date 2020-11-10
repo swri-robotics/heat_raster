@@ -80,8 +80,8 @@ namespace SmoothPoseTraj
     return(P);
   }
 
-  SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, const double& pt_spacing)
-    : pt_spacing_(pt_spacing)
+  SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, const double& point_spacing)
+    : point_spacing_(point_spacing)
   {
     // fit spline to each component
     std::vector<double> x,y,z,qx,qy,qz,qw;
@@ -210,9 +210,9 @@ namespace SmoothPoseTraj
   }// end constructor for SmoothPoseTraj
   
 
-  bool SmoothPoseTraj::process(geometry_msgs::PoseArray& output_poses, double pt_spacing)
+  bool SmoothPoseTraj::process(geometry_msgs::PoseArray& output_poses, double point_spacing)
   {
-    if(pt_spacing == -1.0) pt_spacing = pt_spacing_;
+    if(point_spacing == -1.0) point_spacing = point_spacing_;
     output_poses.poses.clear();
     
     // add start pose
@@ -232,8 +232,8 @@ namespace SmoothPoseTraj
     while(t < max_t_)
       {
 	double D;
-	geometry_msgs::Pose P = getPoseAtCrowDistance(t, pt_spacing, D);
-	if(D > .5*pt_spacing) // only add the new pose if its a significant fraction of the desired spacing
+	geometry_msgs::Pose P = getPoseAtCrowDistance(t, point_spacing, D);
+	if(D > .5*point_spacing) // only add the new pose if its a significant fraction of the desired spacing
 	  output_poses.poses.push_back(P);
       }
     align_x_to_next(output_poses);
@@ -283,17 +283,17 @@ namespace SmoothPoseTraj
 	poses.poses[i].orientation.y = Q2.y();
 	poses.poses[i].orientation.z = Q2.z();
       }
-
+    return(true);
   }
 
-  geometry_msgs::Pose SmoothPoseTraj::getPoseAtCrowDistance(double& t, double pt_spacing, double &actual_distance)
+  geometry_msgs::Pose SmoothPoseTraj::getPoseAtCrowDistance(double& t, double point_spacing, double &actual_distance)
   {
     geometry_msgs::Pose P;
     Eigen::Vector3d v1(sx_(t),sy_(t),sz_(t));
     t+=.1;
     actual_distance =0.0;
     
-    while(t<(max_t_-.2) && actual_distance<pt_spacing)
+    while(t<(max_t_-.2) && actual_distance<point_spacing)
       {
 	Eigen::Vector3d v2(sx_(t),sy_(t),sz_(t));
 	actual_distance = (v2-v1).norm();

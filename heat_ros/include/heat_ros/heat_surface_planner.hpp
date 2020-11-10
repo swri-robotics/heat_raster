@@ -46,13 +46,13 @@ namespace heat
 
   struct ProcessConfig
   {
-    double pt_spacing;
-    double line_spacing;
+    double point_spacing;
+    double raster_spacing;
     double tool_offset;
     double min_hole_size;
     double min_segment_size;
     bool generate_extra_rasters;
-    double raster_angle;
+    double raster_rot_offset;
   };
 
   class HeatSurfacePlanner
@@ -66,12 +66,12 @@ namespace heat
       }
     HeatSurfacePlanner(ProcessConfig& config)
       {
-	config_.pt_spacing       = config.pt_spacing;
-	config_.line_spacing     = config.line_spacing;
-	config_.tool_offset      = config.tool_offset;
-	config_.min_hole_size    = config.min_hole_size;
-	config_.min_segment_size = config.min_segment_size;
-	config_.raster_angle     = config.raster_angle;
+	config_.point_spacing     = config.point_spacing;
+	config_.raster_spacing    = config.raster_spacing;
+	config_.tool_offset       = config.tool_offset;
+	config_.min_hole_size     = config.min_hole_size;
+	config_.min_segment_size  = config.min_segment_size;
+	config_.raster_rot_offset = config.raster_rot_offset;
 	init();
       }
 
@@ -92,11 +92,12 @@ namespace heat
     static ProcessConfig getDefaultConfig()
     {
       ProcessConfig C;
-	C.pt_spacing       = 0.01;
-	C.line_spacing     = 0.015;
-	C.tool_offset      = 0.0; 
-	C.min_hole_size    = 0.01;
-	C.min_segment_size = 0.01;
+	C.point_spacing     = 0.01;
+	C.raster_spacing    = 0.015;
+	C.tool_offset       = 0.0; 
+	C.min_hole_size     = 0.01;
+	C.min_segment_size  = 0.01;
+	C.raster_rot_offset = 0.0;
 	return(C);
     }
       

@@ -40,7 +40,7 @@ protected:
 
   /** goal has:
    *  HeatMeshNSource[] mesh_n_s which has both a mesh and a set of source vertices 
-   *  HeatToolPathConfig[] path_configs
+   *  HeatRasterGeneratorConfig[] path_configs
    *  bool proceed_on_failure  (a currently unused parameter)
    *  result has:
    *  HeatToolPath[] tool_raster_paths
@@ -71,7 +71,7 @@ protected:
       }
 
       // verify configs
-      std::vector<heat_msgs::HeatToolPathConfig> heat_configs;
+      std::vector<heat_msgs::HeatRasterGeneratorConfig> heat_configs;
       if(goal->path_configs.empty())
       {
         ROS_WARN("Path configuration array is empty, using default values");
@@ -120,7 +120,7 @@ protected:
       smooth_pose_traj::SmoothPoseTrajectory::Request smooth_req;
       smooth_pose_traj::SmoothPoseTrajectory::Response smooth_res;
       std::vector<geometry_msgs::PoseArray> smoothed_tool_paths;
-      smooth_req.pt_spacing = config.pt_spacing;
+      smooth_req.point_spacing = config.point_spacing;
       for(int j=0; j<heat_tool_paths.size(); j++){
 	smooth_req.input_poses.poses.assign(heat_tool_paths[j].poses.begin(), heat_tool_paths[j].poses.end());
 	if(!path_smooth_client_.call(smooth_req, smooth_res))
@@ -147,11 +147,11 @@ protected:
 	// need to fill in trp.header since its sent to the result, but with what??
         result.tool_raster_paths[i] = move(trp);
         result.tool_path_validities[i] = true;
-        ROS_INFO("Surface %d processed with %d paths",i, result.tool_raster_paths[i].paths.size());
+        ROS_INFO("Surface %ld processed with %ld paths",i, result.tool_raster_paths[i].paths.size());
       }// end tool paths size was non-zero for this surface
       else
       {
-        ROS_ERROR("Path planning on surface %d failed", i);
+        ROS_ERROR("Path planning on surface %ld failed", i);
         if(!goal->proceed_on_failure)
         {
           break;
@@ -224,27 +224,30 @@ protected:
     as_.setPreempted();
   }
   
-  heat_msgs::HeatToolPathConfig toHeatMsg(const heat::ProcessConfig& tool_config)
+  heat_msgs::HeatRasterGeneratorConfig toHeatMsg(const heat::ProcessConfig& tool_config)
   {
-    heat_msgs::HeatToolPathConfig heat_config_msg;
-    heat_config_msg.pt_spacing       = tool_config.pt_spacing;
-    heat_config_msg.line_spacing     = tool_config.line_spacing;
-    heat_config_msg.tool_offset      = tool_config.tool_offset;
-    heat_config_msg.min_hole_size    = tool_config.min_hole_size;
-    heat_config_msg.min_segment_size = tool_config.min_segment_size;
+    heat_msgs::HeatRasterGeneratorConfig heat_config_msg;
+    heat_config_msg.point_spacing          = tool_config.point_spacing;
+    heat_config_msg.raster_spacing          = tool_config.raster_spacing;
+    heat_config_msg.tool_offset             = tool_config.tool_offset;
+    heat_config_msg.min_hole_size           = tool_config.min_hole_size;
+    heat_config_msg.min_segment_size        = tool_config.min_segment_size;
+    heat_config_msg.generate_extra_rasters  = tool_config.generate_extra_rasters;
+    heat_config_msg.raster_rot_offset       = tool_config.raster_rot_offset;
     return std::move(heat_config_msg);
   }
 
   
-  heat::ProcessConfig toProcessConfig(const heat_msgs::HeatToolPathConfig& heat_config_msg)
+  heat::ProcessConfig toProcessConfig(const heat_msgs::HeatRasterGeneratorConfig& heat_config_msg)
   {
     heat::ProcessConfig tool_config;
-    tool_config.pt_spacing       = heat_config_msg.pt_spacing;
-    tool_config.line_spacing     = heat_config_msg.line_spacing;
-    tool_config.tool_offset      = heat_config_msg.tool_offset;
-    tool_config.min_hole_size    = heat_config_msg.min_hole_size;
-    tool_config.min_segment_size = heat_config_msg.min_segment_size;
-    tool_config.raster_angle     = heat_config_msg.raster_angle;
+    tool_config.point_spacing          = heat_config_msg.point_spacing;
+    tool_config.raster_spacing         = heat_config_msg.raster_spacing;
+    tool_config.tool_offset            = heat_config_msg.tool_offset;
+    tool_config.min_hole_size          = heat_config_msg.min_hole_size;
+    tool_config.min_segment_size       = heat_config_msg.min_segment_size;
+    tool_config.generate_extra_rasters = heat_config_msg.generate_extra_rasters;
+    tool_config.raster_rot_offset      = heat_config_msg.raster_rot_offset;
     return std::move(tool_config);
   }
 

@@ -1,8 +1,8 @@
 # Goal
-shape_msgs/Mesh[] surface_meshes  # The surfaces on which to generate paths.
-heat_msgs/Source[] sources        # The indices of the mesh vertices that are set as sources, usually a start path
-HeatToolPathConfig[] path_configs # The path configuration parameters for the surface. 
-bool proceed_on_failure		  # When True, path generation will proceed to the next surface when planning fails on the current surface. 
+shape_msgs/Mesh[] surface_meshes         # The surfaces on which to generate paths.
+heat_msgs/Source[] sources               # The indices of the mesh vertices that are set as sources, usually a start path
+HeatRasterGeneratorConfig[] path_configs # The path configuration parameters for the surface. 
+bool proceed_on_failure		         # When True, path generation will proceed to the next surface when planning fails on the current surface. 
 ---
 # Result
 bool success
