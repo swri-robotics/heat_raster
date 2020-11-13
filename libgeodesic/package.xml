@@ -7,6 +7,10 @@
   <license>Unknown</license>
   <author>Chris Lewis</author>
 
+  <depend>suitesparse</depend>
+  <depend>boost</depend>
+  <depend>liblapack-dev</depend>
+
   <export>
     <build_type>cmake</build_type>
   </export>
