@@ -41,7 +41,6 @@ catkin_package(
   DEPENDS
     VTK
     libgeodesic
-    libgeodesic_cpp
 )
 
 include_directories(include
