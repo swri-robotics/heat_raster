@@ -4,8 +4,6 @@ project(heat_ros)
 
 add_compile_options(-std=c++14)
 
-find_package(Boost COMPONENTS system REQUIRED)
-find_package(LAPACK REQUIRED)
 find_package(libgeodesic REQUIRED)
 
 ## Find catkin macros and libraries
@@ -13,11 +11,9 @@ find_package(libgeodesic REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   actionlib
   cmake_modules
-  geometry_msgs
   roscpp
-  std_msgs
-  std_srvs
   heat_msgs
+  smooth_pose_traj
 )
 
 find_package(VTK REQUIRED NO_MODULE)
@@ -46,8 +42,8 @@ catkin_package(
 include_directories(include
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
-  ${libgeodesic_INCLUDE_DIRS}
   ${LAPACK_INCLUDE_DIRS}
+  ${VTK_INCLUDE_DIRS}
   )
 
 add_executable(heat_surface_plan_server
@@ -75,4 +71,3 @@ install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   PATTERN ".svn" EXCLUDE
 )
-
