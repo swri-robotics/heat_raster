@@ -5,57 +5,50 @@
 #include <string.h>
 #include <math.h>
 
-void hmVectorPairSizeTDoubleInitialize( hmVectorPairSizeTDouble* vector )
+void hmVectorPairSizeTDoubleInitialize(hmVectorPairSizeTDouble* vector)
 {
-   vector->size = 0;
-   vector->storage = hmVectorDefaultStorage;
-   vector->entries = (hmPairSizeTDouble *) malloc( hmVectorDefaultStorage * sizeof(hmPairSizeTDouble) );
+  vector->size = 0;
+  vector->storage = hmVectorDefaultStorage;
+  vector->entries = (hmPairSizeTDouble*)malloc(hmVectorDefaultStorage * sizeof(hmPairSizeTDouble));
 }
 
-void hmVectorPairSizeTDoubleDestroy( hmVectorPairSizeTDouble* vector )
+void hmVectorPairSizeTDoubleDestroy(hmVectorPairSizeTDouble* vector) { hmDestroy(vector->entries); }
+
+void hmVectorPairSizeTDoubleResize(hmVectorPairSizeTDouble* vector, size_t size)
 {
-   hmDestroy( vector->entries );
+  vector->size = size;
+  vector->storage = hmMaxSizeT(hmVectorDefaultStorage, hmNextPowerOfTwo(size));
+  free(vector->entries);
+  vector->entries = (hmPairSizeTDouble*)malloc(vector->storage * sizeof(hmPairSizeTDouble));
 }
 
-void hmVectorPairSizeTDoubleResize( hmVectorPairSizeTDouble* vector, size_t size )
+void hmVectorPairSizeTDoublePushBack(hmVectorPairSizeTDouble* vector, hmPairSizeTDouble value)
 {
-   vector->size = size;
-   vector->storage = hmMaxSizeT( hmVectorDefaultStorage, hmNextPowerOfTwo( size ));
-   free( vector->entries );
-   vector->entries = (hmPairSizeTDouble *) malloc( vector->storage * sizeof(hmPairSizeTDouble) );
+  hmPairSizeTDouble* newEntries;
+
+  if (vector->size == vector->storage)
+  {
+    vector->storage *= 2;
+    newEntries = (hmPairSizeTDouble*)malloc(vector->storage * sizeof(hmPairSizeTDouble));
+    memcpy(newEntries, vector->entries, vector->size * sizeof(hmPairSizeTDouble));
+    free(vector->entries);
+    vector->entries = newEntries;
+  }
+
+  vector->entries[vector->size] = value;
+  vector->size++;
 }
 
-void hmVectorPairSizeTDoublePushBack( hmVectorPairSizeTDouble* vector, hmPairSizeTDouble value )
+hmPairSizeTDouble hmVectorPairSizeTDoublePopBack(hmVectorPairSizeTDouble* vector)
 {
-   hmPairSizeTDouble* newEntries;
+  assert(vector->size > 0);
 
-   if( vector->size == vector->storage )
-   {
-      vector->storage *= 2;
-      newEntries = (hmPairSizeTDouble *) malloc( vector->storage*sizeof(hmPairSizeTDouble) );
-      memcpy( newEntries, vector->entries, vector->size*sizeof(hmPairSizeTDouble) );
-      free( vector->entries );
-      vector->entries = newEntries;
-   }
+  vector->size--;
 
-   vector->entries[vector->size] = value;
-   vector->size++;
+  return vector->entries[vector->size];
 }
 
-hmPairSizeTDouble hmVectorPairSizeTDoublePopBack( hmVectorPairSizeTDouble* vector )
+void hmVectorPairSizeTDoubleSort(hmVectorPairSizeTDouble* vector)
 {
-   assert( vector->size > 0 );
-
-   vector->size--;
-
-   return vector->entries[ vector->size ];
+  qsort(vector->entries, vector->size, sizeof(hmPairSizeTDouble), hmPairSizeTDoubleComparator);
 }
-
-void hmVectorPairSizeTDoubleSort( hmVectorPairSizeTDouble* vector )
-{
-   qsort( vector->entries,
-          vector->size,
-          sizeof(hmPairSizeTDouble),
-          hmPairSizeTDoubleComparator );
-}
-

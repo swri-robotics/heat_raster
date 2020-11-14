@@ -6,16 +6,16 @@
  * @section LICENSE
  *
  * Copyright 2012 Keenan Crane. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
@@ -26,7 +26,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
  * of the author and should not be interpreted as representing official policies,
  * either expressed or implied, of any other person or institution.
@@ -48,16 +48,16 @@
  * disabled by compiling with the flag -DNDEBUG
  *
  */
-typedef struct hmVectorSizeT {
+typedef struct hmVectorSizeT
+{
+  /** \brief Logical length. */
+  size_t size;
 
-   /** \brief Logical length. */
-   size_t size;
+  /** \brief Amount of physical memory allocated for storage. */
+  size_t storage;
 
-   /** \brief Amount of physical memory allocated for storage. */
-   size_t storage;
-
-   /** \brief Entry values. [1 x storage] */
-   size_t* entries;
+  /** \brief Entry values. [1 x storage] */
+  size_t* entries;
 
 } hmVectorSizeT;
 
@@ -69,7 +69,7 @@ typedef struct hmVectorSizeT {
  * \memberof hmVectorSizeT
  *
  */
-void hmVectorSizeTInitialize( hmVectorSizeT* vector );
+void hmVectorSizeTInitialize(hmVectorSizeT* vector);
 
 /** \brief Destructor.
  *
@@ -77,7 +77,7 @@ void hmVectorSizeTInitialize( hmVectorSizeT* vector );
  * \memberof hmVectorSizeT
  *
  */
-void hmVectorSizeTDestroy( hmVectorSizeT* vector );
+void hmVectorSizeTDestroy(hmVectorSizeT* vector);
 
 /** \brief Changes the vector length.
  *
@@ -89,7 +89,7 @@ void hmVectorSizeTDestroy( hmVectorSizeT* vector );
  * \memberof hmVectorSizeT
  *
  */
-void hmVectorSizeTResize( hmVectorSizeT* vector, size_t size );
+void hmVectorSizeTResize(hmVectorSizeT* vector, size_t size);
 
 /** \brief Sets an entry to the specified value.
  *
@@ -99,13 +99,11 @@ void hmVectorSizeTResize( hmVectorSizeT* vector, size_t size );
  * \memberof hmVectorSizeT
  *
  */
-inline void hmVectorSizeTSetEntry( hmVectorSizeT* vector,
-                                              size_t index,
-                                              size_t value )
+inline void hmVectorSizeTSetEntry(hmVectorSizeT* vector, size_t index, size_t value)
 {
-   assert( index < vector->size );
+  assert(index < vector->size);
 
-   vector->entries[index] = value;
+  vector->entries[index] = value;
 }
 
 /** \brief Gets the value of an entry.
@@ -116,12 +114,11 @@ inline void hmVectorSizeTSetEntry( hmVectorSizeT* vector,
  * \memberof hmVectorSizeT
  *
  */
-inline size_t hmVectorSizeTGetEntry( hmVectorSizeT* vector,
-                                                size_t index )
+inline size_t hmVectorSizeTGetEntry(hmVectorSizeT* vector, size_t index)
 {
-   assert( index < vector->size );
+  assert(index < vector->size);
 
-   return vector->entries[index];
+  return vector->entries[index];
 }
 
 /** \brief Appends a new element.
@@ -131,7 +128,7 @@ inline size_t hmVectorSizeTGetEntry( hmVectorSizeT* vector,
  * \memberof hmVectorSizeT
  *
  */
-void hmVectorSizeTPushBack( hmVectorSizeT* vector, size_t value );
+void hmVectorSizeTPushBack(hmVectorSizeT* vector, size_t value);
 
 /** \brief Removes the last element from the end and returns its value.
  *
@@ -142,7 +139,7 @@ void hmVectorSizeTPushBack( hmVectorSizeT* vector, size_t value );
  * \memberof hmVectorSizeT
  *
  */
-size_t hmVectorSizeTPopBack( hmVectorSizeT* vector );
+size_t hmVectorSizeTPopBack(hmVectorSizeT* vector);
 
 /** \brief Sorts entries.
  *
@@ -150,7 +147,6 @@ size_t hmVectorSizeTPopBack( hmVectorSizeT* vector );
  * \memberof hmVectorSizeT
  *
  */
-void hmVectorSizeTSort( hmVectorSizeT* vector );
+void hmVectorSizeTSort(hmVectorSizeT* vector);
 
 #endif /* LIBGEODESIC_HMVECTORSIZET_H */
-

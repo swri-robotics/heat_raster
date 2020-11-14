@@ -6,16 +6,16 @@
  * @section LICENSE
  *
  * Copyright 2012 Keenan Crane. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
@@ -26,7 +26,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
  * of the author and should not be interpreted as representing official policies,
  * either expressed or implied, of any other person or institution.
@@ -45,46 +45,49 @@
  * vertex-face adjacency structure.
  *
  */
-typedef struct hmTriMesh {
-   /** \brief Number of vertices. */
-   size_t nVertices;
+typedef struct hmTriMesh
+{
+  /** \brief Number of vertices. */
+  size_t nVertices;
 
-   /** \brief Vertex coordinates as consecutive (x,y,z) triples. [3 x nVertices] */
-   double* vertices;
+  /** \brief Vertex coordinates as consecutive (x,y,z) triples. [3 x nVertices] */
+  double* vertices;
 
-   /** \brief Texture coordinates as consecutive (u,v) pairs. [2 x nVertices] */
-   double* texCoords;
+  /** \brief Texture coordinates as consecutive (u,v) pairs. [2 x nVertices] */
+  double* texCoords;
 
-   /** \brief Number of triangles. */
-   size_t nFaces;
+  /** \brief Number of triangles. */
+  size_t nFaces;
 
-   /** \brief Triangles as consecutive (i,j,k) triples of 0-based vertex indices. [3 x nFaces] */
-   size_t* faces;
+  /** \brief Triangles as consecutive (i,j,k) triples of 0-based vertex indices. [3 x nFaces] */
+  size_t* faces;
 
-   /** \brief Indicates whether mesh data is owned by another object (nonzero if true; zero otherwise). */
-   char referenced;
+  /** \brief Indicates whether mesh data is owned by another object (nonzero if true; zero otherwise). */
+  char referenced;
 
-   /** \private
-    * \brief Flags whether each vertex is on the surface boundary. [1 x surface->nVertices] */
-   char* onBoundary;
+  /** \private
+   * \brief Flags whether each vertex is on the surface boundary. [1 x surface->nVertices] */
+  char* onBoundary;
 
-   /** \private
-    * \brief Vertex 1-ring neighbors and associated weights. [1 x surface->nVertices] */
-   hmVectorPairSizeTDouble* vertexNeighbors;
+  /** \private
+   * \brief Vertex 1-ring neighbors and associated weights. [1 x surface->nVertices] */
+  hmVectorPairSizeTDouble* vertexNeighbors;
 
-   /** \private
-    * \brief Dual areas associated with vertices. [1 x surface->nVertices] */
-   double* vertexAreas;
+  /** \private
+   * \brief Dual areas associated with vertices. [1 x surface->nVertices] */
+  double* vertexAreas;
 
-   /** \private
-    * \brief Cotangents of angles at each triangle corner. [3 x surface->nFaces] */
-   double* weights;
+  /** \private
+   * \brief Cotangents of angles at each triangle corner. [3 x surface->nFaces] */
+  double* weights;
 
-   /** \brief Tangent vectors orthogonal to the edges in each triangle (used to accelerate gradient computation). [9 x nFaces] */
-   double* edgeNormals;
+  /** \brief Tangent vectors orthogonal to the edges in each triangle (used to accelerate gradient computation). [9 x
+   * nFaces] */
+  double* edgeNormals;
 
-   /** \brief Edge vectors weighted by opposing angle cotangents in each triangle (used to accelerate divergence computation). [9 x nFaces] */
-   double* weightedEdges;
+  /** \brief Edge vectors weighted by opposing angle cotangents in each triangle (used to accelerate divergence
+   * computation). [9 x nFaces] */
+  double* weightedEdges;
 
 } hmTriMesh;
 
@@ -94,7 +97,7 @@ typedef struct hmTriMesh {
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshInitialize( hmTriMesh* mesh );
+void hmTriMeshInitialize(hmTriMesh* mesh);
 
 /** \brief Destructor.
  *
@@ -102,7 +105,7 @@ void hmTriMeshInitialize( hmTriMesh* mesh );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshDestroy( hmTriMesh* mesh );
+void hmTriMeshDestroy(hmTriMesh* mesh);
 
 /** \brief Replaces mesh1 with mesh2.
  *
@@ -111,7 +114,7 @@ void hmTriMeshDestroy( hmTriMesh* mesh );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshCopy( hmTriMesh* mesh1, const hmTriMesh* mesh2 );
+void hmTriMeshCopy(hmTriMesh* mesh1, const hmTriMesh* mesh2);
 
 /** \brief Copies mesh data.
  *
@@ -124,9 +127,7 @@ void hmTriMeshCopy( hmTriMesh* mesh1, const hmTriMesh* mesh2 );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshCopyData( hmTriMesh* mesh,
-                        size_t nVertices, const double* vertices,
-                        size_t nFaces,    const size_t* faces );
+void hmTriMeshCopyData(hmTriMesh* mesh, size_t nVertices, const double* vertices, size_t nFaces, const size_t* faces);
 
 /** \brief References external mesh data.
  *
@@ -147,9 +148,7 @@ void hmTriMeshCopyData( hmTriMesh* mesh,
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshReferenceData( hmTriMesh* mesh,
-                             size_t nVertices, double* vertices,
-                             size_t nFaces,    size_t* faces );
+void hmTriMeshReferenceData(hmTriMesh* mesh, size_t nVertices, double* vertices, size_t nFaces, size_t* faces);
 
 /** \brief Reads mesh from a Wavefront OBJ file.
  *
@@ -170,7 +169,7 @@ void hmTriMeshReferenceData( hmTriMesh* mesh,
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshReadOBJ( hmTriMesh* mesh, const char* filename );
+void hmTriMeshReadOBJ(hmTriMesh* mesh, const char* filename);
 
 /** \brief Writes mesh to a Wavefront OBJ file.
  *
@@ -191,7 +190,7 @@ void hmTriMeshReadOBJ( hmTriMesh* mesh, const char* filename );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshWriteOBJ( const hmTriMesh* mesh, const char* filename );
+void hmTriMeshWriteOBJ(const hmTriMesh* mesh, const char* filename);
 
 /** \private
  * \brief Updates mesh attributes (vertex areas, 1-ring neighbors, etc.).
@@ -200,7 +199,7 @@ void hmTriMeshWriteOBJ( const hmTriMesh* mesh, const char* filename );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshBuild( hmTriMesh* mesh );
+void hmTriMeshBuild(hmTriMesh* mesh);
 
 /** \private
  * \brief Computes the 1-ring neighbors of each vertex.
@@ -209,7 +208,7 @@ void hmTriMeshBuild( hmTriMesh* mesh );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshFindOneRings( hmTriMesh* distance );
+void hmTriMeshFindOneRings(hmTriMesh* distance);
 
 /** \private
  * \brief Computes dual areas associated with vertices.
@@ -224,7 +223,7 @@ void hmTriMeshFindOneRings( hmTriMesh* distance );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshComputeVertexAreas( hmTriMesh* mesh );
+void hmTriMeshComputeVertexAreas(hmTriMesh* mesh);
 
 /** \private
  * \brief Computes partial edge weights associated with each triangle corner.
@@ -240,7 +239,7 @@ void hmTriMeshComputeVertexAreas( hmTriMesh* mesh );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshComputeWeights( hmTriMesh* mesh );
+void hmTriMeshComputeWeights(hmTriMesh* mesh);
 
 /** \brief Precomputes triangle edge data used to compute gradient and divergence.
  *
@@ -248,7 +247,7 @@ void hmTriMeshComputeWeights( hmTriMesh* mesh );
  * \memberof hmTriMesh
  *
  */
-void hmTriMeshCacheEdgeData( hmTriMesh* mesh );
+void hmTriMeshCacheEdgeData(hmTriMesh* mesh);
 
 /** \brief \f$L^2\f$ distance between two scalar functions at vertices.
  *
@@ -268,7 +267,7 @@ void hmTriMeshCacheEdgeData( hmTriMesh* mesh );
  * \memberof hmTriMesh
  *
  */
-double hmTriMeshL2Distance( hmTriMesh* mesh, double* phi1, double* phi2 );
+double hmTriMeshL2Distance(hmTriMesh* mesh, double* phi1, double* phi2);
 
 /** \brief \f$L^\infty\f$ distance between two scalar functions at vertices.
  *
@@ -282,7 +281,7 @@ double hmTriMeshL2Distance( hmTriMesh* mesh, double* phi1, double* phi2 );
  * \memberof hmTriMesh
  *
  */
-double hmTriMeshLInfinityDistance( hmTriMesh* mesh, double* phi1, double* phi2 );
+double hmTriMeshLInfinityDistance(hmTriMesh* mesh, double* phi1, double* phi2);
 
 /** \brief Mean of pointwise relative error.
  *
@@ -296,7 +295,7 @@ double hmTriMeshLInfinityDistance( hmTriMesh* mesh, double* phi1, double* phi2 )
  * \memberof hmTriMesh
  *
  */
-double hmTriMeshMeanRelativeError( hmTriMesh* mesh, double* phi1, double* phi2 );
+double hmTriMeshMeanRelativeError(hmTriMesh* mesh, double* phi1, double* phi2);
 
 /** \brief Diameter of bounding sphere.
  *
@@ -307,6 +306,6 @@ double hmTriMeshMeanRelativeError( hmTriMesh* mesh, double* phi1, double* phi2 )
  * \memberof hmTriMesh
  *
  */
-double hmTriMeshDiameter( hmTriMesh* mesh );
+double hmTriMeshDiameter(hmTriMesh* mesh);
 
 #endif /* LIBGEODESIC_HMTRIMESH_H */

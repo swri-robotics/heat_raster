@@ -30,57 +30,54 @@
 
 namespace SmoothPoseTraj
 {
+class SmoothPoseTraj
+{
+public:
+  SmoothPoseTraj() {}
+  SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, const double& point_spacing);
 
-  class SmoothPoseTraj
+  ~SmoothPoseTraj()
   {
-    
-  public:
-    SmoothPoseTraj()
-      {
-      }
-    SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, const double& point_spacing);
+    free(sx);
+    free(sy);
+    free(sz);
+    free(sqx);
+    free(sqy);
+    free(sqz);
+    free(sqw);
+  }
 
-    ~SmoothPoseTraj()
-    {
-      free(sx);
-      free(sy);
-      free(sz);
-      free(sqx);
-      free(sqy);
-      free(sqz);
-      free(sqw);
-    }
+  bool process(geometry_msgs::PoseArray& output_poses, double point_spacing = -1);
 
-    bool process(geometry_msgs::PoseArray& output_poses, double point_spacing = -1);
+  bool qnormalize(geometry_msgs::Pose& P);
 
-    bool qnormalize(geometry_msgs::Pose& P);
-  private:
-    geometry_msgs::Pose interpPose(const geometry_msgs::Pose& P1, const geometry_msgs::Pose& P2, double alpha);
-    geometry_msgs::Pose getPoseAtCrowDistance(double& t, double point_spacing, double &actual_distance);
-    geometry_msgs::Pose getNPtAveragePose(const geometry_msgs::PoseArray& input_poses, int pose_index, int n_pts);
-    bool align_x_to_next(geometry_msgs::PoseArray &poses);
-    
-  public:
-    double point_spacing_, total_distance_, max_t_;
-    
-    boost::math::cubic_b_spline<double> sx_;
-    boost::math::cubic_b_spline<double> sy_;
-    boost::math::cubic_b_spline<double> sz_;
-    boost::math::cubic_b_spline<double> sqx_;
-    boost::math::cubic_b_spline<double> sqy_;
-    boost::math::cubic_b_spline<double> sqz_;
-    boost::math::cubic_b_spline<double> sqw_;
+private:
+  geometry_msgs::Pose interpPose(const geometry_msgs::Pose& P1, const geometry_msgs::Pose& P2, double alpha);
+  geometry_msgs::Pose getPoseAtCrowDistance(double& t, double point_spacing, double& actual_distance);
+  geometry_msgs::Pose getNPtAveragePose(const geometry_msgs::PoseArray& input_poses, int pose_index, int n_pts);
+  bool align_x_to_next(geometry_msgs::PoseArray& poses);
 
-  private:
-    boost::math::cubic_b_spline<double>* sx;
-    boost::math::cubic_b_spline<double>* sy;
-    boost::math::cubic_b_spline<double>* sz;
-    boost::math::cubic_b_spline<double>* sqx;
-    boost::math::cubic_b_spline<double>* sqy;
-    boost::math::cubic_b_spline<double>* sqz;
-    boost::math::cubic_b_spline<double>* sqw;
+public:
+  double point_spacing_, total_distance_, max_t_;
 
-  }; // end class SmoothPoseTraj
+  boost::math::cubic_b_spline<double> sx_;
+  boost::math::cubic_b_spline<double> sy_;
+  boost::math::cubic_b_spline<double> sz_;
+  boost::math::cubic_b_spline<double> sqx_;
+  boost::math::cubic_b_spline<double> sqy_;
+  boost::math::cubic_b_spline<double> sqz_;
+  boost::math::cubic_b_spline<double> sqw_;
 
-} // end namespace SmoothPoseTraj
-#endif // INCLUDE_SMOOTH_POSE_TRAJ_H
+private:
+  boost::math::cubic_b_spline<double>* sx;
+  boost::math::cubic_b_spline<double>* sy;
+  boost::math::cubic_b_spline<double>* sz;
+  boost::math::cubic_b_spline<double>* sqx;
+  boost::math::cubic_b_spline<double>* sqy;
+  boost::math::cubic_b_spline<double>* sqz;
+  boost::math::cubic_b_spline<double>* sqw;
+
+};  // end class SmoothPoseTraj
+
+}  // end namespace SmoothPoseTraj
+#endif  // INCLUDE_SMOOTH_POSE_TRAJ_H

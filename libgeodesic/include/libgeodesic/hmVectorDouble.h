@@ -6,16 +6,16 @@
  * @section LICENSE
  *
  * Copyright 2012 Keenan Crane. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
@@ -26,7 +26,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
  * of the author and should not be interpreted as representing official policies,
  * either expressed or implied, of any other person or institution.
@@ -49,16 +49,16 @@
  * compiling with the flag -DNDEBUG
  *
  */
-typedef struct hmVectorDouble {
+typedef struct hmVectorDouble
+{
+  /** \brief Logical length. */
+  size_t size;
 
-   /** \brief Logical length. */
-   size_t size;
+  /** \brief Amount of physical memory allocated for storage. */
+  size_t storage;
 
-   /** \brief Amount of physical memory allocated for storage. */
-   size_t storage;
-
-   /** \brief Entry values. [1 x storage] */
-   double* entries;
+  /** \brief Entry values. [1 x storage] */
+  double* entries;
 
 } hmVectorDouble;
 
@@ -70,7 +70,7 @@ typedef struct hmVectorDouble {
  * \memberof hmVectorDouble
  *
  */
-void hmVectorDoubleInitialize( hmVectorDouble* vector );
+void hmVectorDoubleInitialize(hmVectorDouble* vector);
 
 /** \brief Destructor.
  *
@@ -78,7 +78,7 @@ void hmVectorDoubleInitialize( hmVectorDouble* vector );
  * \memberof hmVectorDouble
  *
  */
-void hmVectorDoubleDestroy( hmVectorDouble* vector );
+void hmVectorDoubleDestroy(hmVectorDouble* vector);
 
 /** \brief Changes the vector length.
  *
@@ -90,7 +90,7 @@ void hmVectorDoubleDestroy( hmVectorDouble* vector );
  * \memberof hmVectorDouble
  *
  */
-void hmVectorDoubleResize( hmVectorDouble* vector, size_t size );
+void hmVectorDoubleResize(hmVectorDouble* vector, size_t size);
 
 /** \brief Sets an entry to the specified value.
  *
@@ -100,13 +100,11 @@ void hmVectorDoubleResize( hmVectorDouble* vector, size_t size );
  * \memberof hmVectorDouble
  *
  */
-static __inline__ void hmVectorDoubleSetEntry( hmVectorDouble* vector,
-                                               size_t index,
-                                               double value )
+static __inline__ void hmVectorDoubleSetEntry(hmVectorDouble* vector, size_t index, double value)
 {
-   assert( index < vector->size );
+  assert(index < vector->size);
 
-   vector->entries[index] = value;
+  vector->entries[index] = value;
 }
 
 /** \brief Gets the value of an entry.
@@ -117,12 +115,11 @@ static __inline__ void hmVectorDoubleSetEntry( hmVectorDouble* vector,
  * \memberof hmVectorDouble
  *
  */
-static __inline__ double hmVectorDoubleGetEntry( hmVectorDouble* vector,
-                                                 size_t index )
+static __inline__ double hmVectorDoubleGetEntry(hmVectorDouble* vector, size_t index)
 {
-   assert( index < vector->size );
+  assert(index < vector->size);
 
-   return vector->entries[index];
+  return vector->entries[index];
 }
 
 /** \brief Appends a new element.
@@ -132,7 +129,7 @@ static __inline__ double hmVectorDoubleGetEntry( hmVectorDouble* vector,
  * \memberof hmVectorDouble
  *
  */
-void hmVectorDoublePushBack( hmVectorDouble* vector, double value );
+void hmVectorDoublePushBack(hmVectorDouble* vector, double value);
 
 /** \brief Removes the last element from the end and returns its value.
  *
@@ -143,8 +140,7 @@ void hmVectorDoublePushBack( hmVectorDouble* vector, double value );
  * \memberof hmVectorDouble
  *
  */
-double hmVectorDoublePopBack( hmVectorDouble* vector );
-
+double hmVectorDoublePopBack(hmVectorDouble* vector);
 
 /** \brief Sorts entries.
  *
@@ -152,7 +148,6 @@ double hmVectorDoublePopBack( hmVectorDouble* vector );
  * \memberof hmVectorDouble
  *
  */
-void hmVectorDoubleSort( hmVectorDouble* vector );
+void hmVectorDoubleSort(hmVectorDouble* vector);
 
 #endif /* LIBGEODESIC_HMVECTORDOUBLE_H */
-
