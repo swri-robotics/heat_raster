@@ -7,16 +7,16 @@
 
 cholmod_common hmCHOLMODCommon;
 
-void hmContextInitialize( hmContext* context )
+void hmContextInitialize(hmContext* context)
 {
-   cholmod_l_start( &hmCHOLMODCommon );
-   context->initialized = 1;
+  cholmod_l_start(&hmCHOLMODCommon);
+  context->initialized = 1;
 }
 
-void hmContextDestroy( hmContext* context )
+void hmContextDestroy(hmContext* context)
 {
-   cholmod_l_finish( &hmCHOLMODCommon );
-   context->initialized = 0;
+  cholmod_l_finish(&hmCHOLMODCommon);
+  context->initialized = 0;
 }
 
 #endif /* HM_USE_CHOLMOD */
@@ -28,23 +28,19 @@ void hmContextDestroy( hmContext* context )
 #include <hsl_ma87d.h>
 
 struct ma87_control hmHSLMA87control;
-struct ma87_info    hmHSLMA87info;
+struct ma87_info hmHSLMA87info;
 
 struct mc68_control hmHSLMC68control;
-struct mc68_info    hmHSLMC68info;
+struct mc68_info hmHSLMC68info;
 
-void hmContextInitialize( hmContext* context )
+void hmContextInitialize(hmContext* context)
 {
-   ma87_default_control( &hmHSLMA87control );
-   mc68_default_control( &hmHSLMC68control );
-   context->initialized = 1;
+  ma87_default_control(&hmHSLMA87control);
+  mc68_default_control(&hmHSLMC68control);
+  context->initialized = 1;
 }
 
-void hmContextDestroy( hmContext* context )
-{
-   context->initialized = 0;
-}
+void hmContextDestroy(hmContext* context) { context->initialized = 0; }
 
 #endif /* HM_USE_CHOLMOD */
 /* ===================== END CHOLMOD IMPLEMENTATION ===================== */
-

@@ -30,8 +30,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS
     include
-  LIBRARIES
-    smooth_pose_traj
+#  LIBRARIES
   CATKIN_DEPENDS
     geometry_msgs
     message_runtime

@@ -5,57 +5,50 @@
 #include <string.h>
 #include <math.h>
 
-void hmVectorSizeTInitialize( hmVectorSizeT* vector )
+void hmVectorSizeTInitialize(hmVectorSizeT* vector)
 {
-   vector->size = 0;
-   vector->storage = hmVectorDefaultStorage;
-   vector->entries = (size_t *) malloc( hmVectorDefaultStorage * sizeof(size_t) );
+  vector->size = 0;
+  vector->storage = hmVectorDefaultStorage;
+  vector->entries = (size_t*)malloc(hmVectorDefaultStorage * sizeof(size_t));
 }
 
-void hmVectorSizeTDestroy( hmVectorSizeT* vector )
+void hmVectorSizeTDestroy(hmVectorSizeT* vector) { hmDestroy(vector->entries); }
+
+void hmVectorSizeTResize(hmVectorSizeT* vector, size_t size)
 {
-   hmDestroy( vector->entries );
+  vector->size = size;
+  vector->storage = hmMaxSizeT(hmVectorDefaultStorage, hmNextPowerOfTwo(size));
+  free(vector->entries);
+  vector->entries = (size_t*)malloc(vector->storage * sizeof(size_t));
 }
 
-void hmVectorSizeTResize( hmVectorSizeT* vector, size_t size )
+void hmVectorSizeTPushBack(hmVectorSizeT* vector, size_t value)
 {
-   vector->size = size;
-   vector->storage = hmMaxSizeT( hmVectorDefaultStorage, hmNextPowerOfTwo( size ));
-   free( vector->entries );
-   vector->entries = (size_t *) malloc( vector->storage * sizeof(size_t) );
+  size_t* newEntries;
+
+  if (vector->size == vector->storage)
+  {
+    vector->storage *= 2;
+    newEntries = (size_t*)malloc(vector->storage * sizeof(size_t));
+    memcpy(newEntries, vector->entries, vector->size * sizeof(size_t));
+    free(vector->entries);
+    vector->entries = newEntries;
+  }
+
+  vector->entries[vector->size] = value;
+  vector->size++;
 }
 
-void hmVectorSizeTPushBack( hmVectorSizeT* vector, size_t value )
+size_t hmVectorSizeTPopBack(hmVectorSizeT* vector)
 {
-   size_t* newEntries;
+  assert(vector->size > 0);
 
-   if( vector->size == vector->storage )
-   {
-      vector->storage *= 2;
-      newEntries = (size_t *) malloc( vector->storage*sizeof(size_t) );
-      memcpy( newEntries, vector->entries, vector->size*sizeof(size_t) );
-      free( vector->entries );
-      vector->entries = newEntries;
-   }
+  vector->size--;
 
-   vector->entries[vector->size] = value;
-   vector->size++;
+  return vector->entries[vector->size];
 }
 
-size_t hmVectorSizeTPopBack( hmVectorSizeT* vector )
+void hmVectorSizeTSort(hmVectorSizeT* vector)
 {
-   assert( vector->size > 0 );
-
-   vector->size--;
-
-   return vector->entries[ vector->size ];
+  qsort(vector->entries, vector->size, sizeof(size_t), hmSizeTComparator);
 }
-
-void hmVectorSizeTSort( hmVectorSizeT* vector )
-{
-   qsort( vector->entries,
-          vector->size,
-          sizeof(size_t),
-          hmSizeTComparator );
-}
-

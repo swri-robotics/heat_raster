@@ -6,16 +6,16 @@
  * @section LICENSE
  *
  * Copyright 2012 Keenan Crane. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
@@ -26,7 +26,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
  * of the author and should not be interpreted as representing official policies,
  * either expressed or implied, of any other person or institution.
@@ -43,10 +43,10 @@
  * Initializes universal data that needs to be instantiated only once.
  *
  */
-typedef struct hmContext {
-
-   /** \brief Flags whether data has been initialized. */
-   char initialized;
+typedef struct hmContext
+{
+  /** \brief Flags whether data has been initialized. */
+  char initialized;
 
 } hmContext;
 
@@ -56,7 +56,7 @@ typedef struct hmContext {
  * \memberof hmContext
  *
  */
-void hmContextInitialize( hmContext* context );
+void hmContextInitialize(hmContext* context);
 
 /** \brief Destructor.
  *
@@ -64,7 +64,6 @@ void hmContextInitialize( hmContext* context );
  * \memberof hmContext
  *
  */
-void hmContextDestroy( hmContext* context );
+void hmContextDestroy(hmContext* context);
 
 #endif /* LIBGEODESIC_HMCONTEXT_H */
-

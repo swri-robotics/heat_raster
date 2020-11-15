@@ -6,16 +6,16 @@
  * @section LICENSE
  *
  * Copyright 2012 Keenan Crane. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
@@ -26,7 +26,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
  * of the author and should not be interpreted as representing official policies,
  * either expressed or implied, of any other person or institution.
@@ -54,11 +54,11 @@ typedef double hmVec3[3];
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Set( hmVec3 u, double x, double y, double z )
+static __inline__ void hmVec3Set(hmVec3 u, double x, double y, double z)
 {
-   u[0] = x;
-   u[1] = y;
-   u[2] = z;
+  u[0] = x;
+  u[1] = y;
+  u[2] = z;
 }
 
 /** \brief Initializes vector from the first three components of an array.
@@ -68,11 +68,11 @@ static __inline__ void hmVec3Set( hmVec3 u, double x, double y, double z )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3FromArray( hmVec3 u, const double* x )
+static __inline__ void hmVec3FromArray(hmVec3 u, const double* x)
 {
-   u[0] = x[0];
-   u[1] = x[1];
-   u[2] = x[2];
+  u[0] = x[0];
+  u[1] = x[1];
+  u[2] = x[2];
 }
 
 /** \brief Computes sum \f$w=u+v\f$ of two vectors \f$u\f$ and \f$v\f$.
@@ -83,11 +83,11 @@ static __inline__ void hmVec3FromArray( hmVec3 u, const double* x )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Add( hmVec3 w, const hmVec3 u, const hmVec3 v )
+static __inline__ void hmVec3Add(hmVec3 w, const hmVec3 u, const hmVec3 v)
 {
-   w[0] = u[0] + v[0];
-   w[1] = u[1] + v[1];
-   w[2] = u[2] + v[2];
+  w[0] = u[0] + v[0];
+  w[1] = u[1] + v[1];
+  w[2] = u[2] + v[2];
 }
 
 /** \brief Replaces the vector \f$u\f$ with the vector \f$u+v\f$.
@@ -97,11 +97,11 @@ static __inline__ void hmVec3Add( hmVec3 w, const hmVec3 u, const hmVec3 v )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Inc( hmVec3 u, const hmVec3 v )
+static __inline__ void hmVec3Inc(hmVec3 u, const hmVec3 v)
 {
-   u[0] += v[0];
-   u[1] += v[1];
-   u[2] += v[2];
+  u[0] += v[0];
+  u[1] += v[1];
+  u[2] += v[2];
 }
 
 /** \brief Computes difference \f$w=u-v\f$ of two vectors \f$u\f$ and \f$v\f$.
@@ -112,11 +112,11 @@ static __inline__ void hmVec3Inc( hmVec3 u, const hmVec3 v )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Sub( hmVec3 w, const hmVec3 u, const hmVec3 v )
+static __inline__ void hmVec3Sub(hmVec3 w, const hmVec3 u, const hmVec3 v)
 {
-   w[0] = u[0] - v[0];
-   w[1] = u[1] - v[1];
-   w[2] = u[2] - v[2];
+  w[0] = u[0] - v[0];
+  w[1] = u[1] - v[1];
+  w[2] = u[2] - v[2];
 }
 
 /** \brief Replaces the vector \f$u\f$ with the vector \f$u-v\f$.
@@ -126,11 +126,11 @@ static __inline__ void hmVec3Sub( hmVec3 w, const hmVec3 u, const hmVec3 v )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Dec( hmVec3 u, const hmVec3 v )
+static __inline__ void hmVec3Dec(hmVec3 u, const hmVec3 v)
 {
-   u[0] -= v[0];
-   u[1] -= v[1];
-   u[2] -= v[2];
+  u[0] -= v[0];
+  u[1] -= v[1];
+  u[2] -= v[2];
 }
 
 /** \brief Replaces the vector \f$u\f$ with the vector \f$-u\f$.
@@ -139,11 +139,11 @@ static __inline__ void hmVec3Dec( hmVec3 u, const hmVec3 v )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Negate( hmVec3 u )
+static __inline__ void hmVec3Negate(hmVec3 u)
 {
-   u[0] = -u[0];
-   u[1] = -u[1];
-   u[2] = -u[2];
+  u[0] = -u[0];
+  u[1] = -u[1];
+  u[2] = -u[2];
 }
 
 /** \brief Multiples a vector \f$u\f$ by a constant factor \f$a\f$ to get the new vector \f$w=au\f$.
@@ -154,11 +154,11 @@ static __inline__ void hmVec3Negate( hmVec3 u )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Mul( hmVec3 w, double a, const hmVec3 u )
+static __inline__ void hmVec3Mul(hmVec3 w, double a, const hmVec3 u)
 {
-   w[0] = a*u[0];
-   w[1] = a*u[1];
-   w[2] = a*u[2];
+  w[0] = a * u[0];
+  w[1] = a * u[1];
+  w[2] = a * u[2];
 }
 
 /** \brief Replaces a vector \f$u\f$ with the rescaled vector \f$au\f$.
@@ -168,11 +168,11 @@ static __inline__ void hmVec3Mul( hmVec3 w, double a, const hmVec3 u )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Scale( hmVec3 u, double a )
+static __inline__ void hmVec3Scale(hmVec3 u, double a)
 {
-   u[0] *= a;
-   u[1] *= a;
-   u[2] *= a;
+  u[0] *= a;
+  u[1] *= a;
+  u[2] *= a;
 }
 
 /** \brief Computes Euclidean inner product \f$a = u \cdot v \f$ of two vectors \f$u\f$ and \f$v\f$.
@@ -183,12 +183,7 @@ static __inline__ void hmVec3Scale( hmVec3 u, double a )
  * \memberof hmVec3
  *
  */
-static __inline__ double hmVec3Dot( const hmVec3 u, const hmVec3 v )
-{
-   return u[0]*v[0] +
-          u[1]*v[1] +
-          u[2]*v[2] ;
-}
+static __inline__ double hmVec3Dot(const hmVec3 u, const hmVec3 v) { return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]; }
 
 /** \brief Computes cross product \f$w = u \times v\f$ of two vectors \f$u\f$ and \f$v\f$.
  *
@@ -198,11 +193,11 @@ static __inline__ double hmVec3Dot( const hmVec3 u, const hmVec3 v )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Cross( hmVec3 w, const hmVec3 u, const hmVec3 v )
+static __inline__ void hmVec3Cross(hmVec3 w, const hmVec3 u, const hmVec3 v)
 {
-   w[0] = u[1]*v[2] - u[2]*v[1];
-   w[1] = u[2]*v[0] - u[0]*v[2];
-   w[2] = u[0]*v[1] - u[1]*v[0];
+  w[0] = u[1] * v[2] - u[2] * v[1];
+  w[1] = u[2] * v[0] - u[0] * v[2];
+  w[2] = u[0] * v[1] - u[1] * v[0];
 }
 
 /** \brief Computes Euclidean length \f$a = ||u|| = \sqrt{u \cdot u}\f$ of a vector \f$u\f$.
@@ -212,12 +207,7 @@ static __inline__ void hmVec3Cross( hmVec3 w, const hmVec3 u, const hmVec3 v )
  * \memberof hmVec3
  *
  */
-static __inline__ double hmVec3Norm( const hmVec3 u )
-{
-   return sqrt( u[0]*u[0] +
-                u[1]*u[1] +
-                u[2]*u[2] );
-}
+static __inline__ double hmVec3Norm(const hmVec3 u) { return sqrt(u[0] * u[0] + u[1] * u[1] + u[2] * u[2]); }
 
 /** \brief Computes squared Euclidean length \f$a = ||u||^2 = u \cdot u\f$ of a vector \f$u\f$.
  *
@@ -226,12 +216,7 @@ static __inline__ double hmVec3Norm( const hmVec3 u )
  * \memberof hmVec3
  *
  */
-static __inline__ double hmVec3Norm2( const hmVec3 u )
-{
-   return u[0]*u[0] +
-          u[1]*u[1] +
-          u[2]*u[2] ;
-}
+static __inline__ double hmVec3Norm2(const hmVec3 u) { return u[0] * u[0] + u[1] * u[1] + u[2] * u[2]; }
 
 /** \brief Divides a vector \f$u\f$ by its length.
  *
@@ -239,13 +224,13 @@ static __inline__ double hmVec3Norm2( const hmVec3 u )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Normalize( hmVec3 u )
+static __inline__ void hmVec3Normalize(hmVec3 u)
 {
-   double rNorm = 1. / sqrt( u[0]*u[0] + u[1]*u[1] + u[2]*u[2] );
+  double rNorm = 1. / sqrt(u[0] * u[0] + u[1] * u[1] + u[2] * u[2]);
 
-   u[0] *= rNorm;
-   u[1] *= rNorm;
-   u[2] *= rNorm;
+  u[0] *= rNorm;
+  u[1] *= rNorm;
+  u[2] *= rNorm;
 }
 
 /** \brief Computes unit length vector \f$w = u/|u|\f$ parallel to \f$u\f$.
@@ -255,13 +240,13 @@ static __inline__ void hmVec3Normalize( hmVec3 u )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Unit( hmVec3 w, const hmVec3 u )
+static __inline__ void hmVec3Unit(hmVec3 w, const hmVec3 u)
 {
-   double rNorm = 1. / sqrt( u[0]*u[0] + u[1]*u[1] + u[2]*u[2] );
+  double rNorm = 1. / sqrt(u[0] * u[0] + u[1] * u[1] + u[2] * u[2]);
 
-   w[0] = u[0]*rNorm;
-   w[1] = u[1]*rNorm;
-   w[2] = u[2]*rNorm;
+  w[0] = u[0] * rNorm;
+  w[1] = u[1] * rNorm;
+  w[2] = u[2] * rNorm;
 }
 
 /** \brief Prints the vector \f$u\f$ to stdout.
@@ -270,10 +255,7 @@ static __inline__ void hmVec3Unit( hmVec3 w, const hmVec3 u )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3Print( const hmVec3 u )
-{
-   printf( "[ %e %e %e ]\n", u[0], u[1], u[2] );
-}
+static __inline__ void hmVec3Print(const hmVec3 u) { printf("[ %e %e %e ]\n", u[0], u[1], u[2]); }
 
 /** \brief Prints the vector \f$u\f$ to stderr.
  *
@@ -281,10 +263,6 @@ static __inline__ void hmVec3Print( const hmVec3 u )
  * \memberof hmVec3
  *
  */
-static __inline__ void hmVec3PrintErr( const hmVec3 u )
-{
-   fprintf( stderr, "[ %e %e %e ]\n", u[0], u[1], u[2] );
-}
+static __inline__ void hmVec3PrintErr(const hmVec3 u) { fprintf(stderr, "[ %e %e %e ]\n", u[0], u[1], u[2]); }
 
 #endif /* LIBGEODESIC_HMVEC3_H */
-

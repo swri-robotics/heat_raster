@@ -5,57 +5,50 @@
 #include <string.h>
 #include <math.h>
 
-void hmVectorDoubleInitialize( hmVectorDouble* vector )
+void hmVectorDoubleInitialize(hmVectorDouble* vector)
 {
-   vector->size = 0;
-   vector->storage = hmVectorDefaultStorage;
-   vector->entries = (double *) malloc( hmVectorDefaultStorage * sizeof(double) );
+  vector->size = 0;
+  vector->storage = hmVectorDefaultStorage;
+  vector->entries = (double*)malloc(hmVectorDefaultStorage * sizeof(double));
 }
 
-void hmVectorDoubleDestroy( hmVectorDouble* vector )
+void hmVectorDoubleDestroy(hmVectorDouble* vector) { hmDestroy(vector->entries); }
+
+void hmVectorDoubleResize(hmVectorDouble* vector, size_t size)
 {
-   hmDestroy( vector->entries );
+  vector->size = size;
+  vector->storage = hmMaxSizeT(hmVectorDefaultStorage, hmNextPowerOfTwo(size));
+  free(vector->entries);
+  vector->entries = (double*)malloc(vector->storage * sizeof(double));
 }
 
-void hmVectorDoubleResize( hmVectorDouble* vector, size_t size )
+void hmVectorDoublePushBack(hmVectorDouble* vector, double value)
 {
-   vector->size = size;
-   vector->storage = hmMaxSizeT( hmVectorDefaultStorage, hmNextPowerOfTwo( size ));
-   free( vector->entries );
-   vector->entries = (double *) malloc( vector->storage * sizeof(double) );
+  double* newEntries;
+
+  if (vector->size == vector->storage)
+  {
+    vector->storage *= 2;
+    newEntries = (double*)malloc(vector->storage * sizeof(double));
+    memcpy(newEntries, vector->entries, vector->size * sizeof(double));
+    free(vector->entries);
+    vector->entries = newEntries;
+  }
+
+  vector->entries[vector->size] = value;
+  vector->size++;
 }
 
-void hmVectorDoublePushBack( hmVectorDouble* vector, double value )
+double hmVectorDoublePopBack(hmVectorDouble* vector)
 {
-   double* newEntries;
+  assert(vector->size > 0);
 
-   if( vector->size == vector->storage )
-   {
-      vector->storage *= 2;
-      newEntries = (double *) malloc( vector->storage*sizeof(double) );
-      memcpy( newEntries, vector->entries, vector->size*sizeof(double) );
-      free( vector->entries );
-      vector->entries = newEntries;
-   }
+  vector->size--;
 
-   vector->entries[vector->size] = value;
-   vector->size++;
+  return vector->entries[vector->size];
 }
 
-double hmVectorDoublePopBack( hmVectorDouble* vector )
+void hmVectorDoubleSort(hmVectorDouble* vector)
 {
-   assert( vector->size > 0 );
-
-   vector->size--;
-
-   return vector->entries[ vector->size ];
+  qsort(vector->entries, vector->size, sizeof(double), hmDoubleComparator);
 }
-
-void hmVectorDoubleSort( hmVectorDouble* vector )
-{
-   qsort( vector->entries,
-          vector->size,
-          sizeof(double),
-          hmDoubleComparator );
-}
-

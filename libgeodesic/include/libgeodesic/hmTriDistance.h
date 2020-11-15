@@ -6,16 +6,16 @@
  * @section LICENSE
  *
  * Copyright 2012 Keenan Crane. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
@@ -26,7 +26,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
  * of the author and should not be interpreted as representing official policies,
  * either expressed or implied, of any other person or institution.
@@ -61,87 +61,87 @@
  * Heat_, [arXiv:1204.6216v1](http://arxiv.org/abs/1204.6216) (2012).
  *
  */
-typedef struct hmTriDistance {
+typedef struct hmTriDistance
+{
+  /* PUBLIC MEMBERS =================================================== */
 
-   /* PUBLIC MEMBERS =================================================== */
+  /** \brief Mesh of the domain \f$M\f$.  (__Note:__ since this member may reference an external object, it is not
+   * automatically deallocated upon destruction.) */
+  hmTriMesh* surface;
 
-   /** \brief Mesh of the domain \f$M\f$.  (__Note:__ since this member may reference an external object, it is not automatically deallocated upon destruction.) */
-   hmTriMesh* surface;
+  /** \brief Integration time \f$t\f$ for heat flow.
+   *
+   * Larger values of \f$t\f$ result in smoother approximations of
+   * geodesic distance.  The value that best approximates the true
+   * geodesic distance can be estimated by calling hmTriDistanceEstimateTime().
+   *
+   * */
+  double time;
 
-   /** \brief Integration time \f$t\f$ for heat flow.
-    *
-    * Larger values of \f$t\f$ result in smoother approximations of
-    * geodesic distance.  The value that best approximates the true
-    * geodesic distance can be estimated by calling hmTriDistanceEstimateTime().
-    * 
-    * */
-   double time;
+  /** \brief Interpolates between domain boundary conditions; 0 means pure Neumann, 1 means pure Dirichlet. */
+  double boundaryConditions;
 
-   /** \brief Interpolates between domain boundary conditions; 0 means pure Neumann, 1 means pure Dirichlet. */
-   double boundaryConditions;
+  /** \brief Source set, equal to 1 at source vertices; 0 otherwise. [surface->nVertices x 1] */
+  hmDenseMatrix isSource;
 
-   /** \brief Source set, equal to 1 at source vertices; 0 otherwise. [surface->nVertices x 1] */
-   hmDenseMatrix isSource;
+  /** \brief Distance values \f$\phi\f$. [surface->nVertices x 1] */
+  hmDenseMatrix distance;
 
-   /** \brief Distance values \f$\phi\f$. [surface->nVertices x 1] */
-   hmDenseMatrix distance;
+  /** \brief Flags whether to use verbose output (timing information, etc.). */
+  char verbose;
 
-   /** \brief Flags whether to use verbose output (timing information, etc.). */
-   char verbose;
+  /* PRIVATE MEMBERS ================================================== */
 
+  /** \private
+   * \brief Solution \f$u\f$ to heat equation with Neumann boundary conditions. [surface->nVertices x 1] */
+  hmDenseMatrix heatNeumann;
 
-   /* PRIVATE MEMBERS ================================================== */
+  /** \private
+   * \brief Solution \f$u\f$ to heat equation with Dirichlet boundary conditions. [surface->nVertices x 1] */
+  hmDenseMatrix heatDirichlet;
 
-   /** \private
-    * \brief Solution \f$u\f$ to heat equation with Neumann boundary conditions. [surface->nVertices x 1] */
-   hmDenseMatrix heatNeumann;
+  /** \private
+   * \brief Final solution to heat equation (points to entries of either hmTriDistance::heatNeumann or
+   * hmTriDistance::heatDirichlet). */
+  double* heat;
 
-   /** \private
-    * \brief Solution \f$u\f$ to heat equation with Dirichlet boundary conditions. [surface->nVertices x 1] */
-   hmDenseMatrix heatDirichlet;
+  /** \private
+   * \brief Divergence \f$\nabla \cdot X\f$ of normalized vector field \f$X\f$. [1 x surface->nVertices] */
+  hmDenseMatrix potential;
 
-   /** \private
-    * \brief Final solution to heat equation (points to entries of either hmTriDistance::heatNeumann or hmTriDistance::heatDirichlet). */
-   double* heat;
+  /** \private
+   * \brief Conformal (i.e., weak) Laplacian \f$L_C\f$. */
+  hmSparseMatrix laplacian;
 
-   /** \private
-    * \brief Divergence \f$\nabla \cdot X\f$ of normalized vector field \f$X\f$. [1 x surface->nVertices] */
-   hmDenseMatrix potential;
+  /** \private
+   * \brief One-step heat flow operator \f$A-tL_C\f$ with zero Neumann boundary conditions. */
+  hmSparseMatrix heatFlowNeumann;
 
-   /** \private
-    * \brief Conformal (i.e., weak) Laplacian \f$L_C\f$. */
-   hmSparseMatrix laplacian;
+  /** \private
+   * \brief One-step heat flow operator \f$A-tL_C\f$ with zero Dirichlet boundary conditions. */
+  hmSparseMatrix heatFlowDirichlet;
 
-   /** \private
-    * \brief One-step heat flow operator \f$A-tL_C\f$ with zero Neumann boundary conditions. */
-   hmSparseMatrix heatFlowNeumann;
+  /** \private
+   * \brief Cholesky factor for hmTriDistance::Laplacian. */
+  hmCholeskyFactor laplacianFactor;
 
-   /** \private
-    * \brief One-step heat flow operator \f$A-tL_C\f$ with zero Dirichlet boundary conditions. */
-   hmSparseMatrix heatFlowDirichlet;
+  /** \private
+   * \brief Cholesky factor for hmTriDistance::heatFlowNeumann. */
+  hmCholeskyFactor heatFlowNeumannFactor;
 
-   /** \private
-    * \brief Cholesky factor for hmTriDistance::Laplacian. */
-   hmCholeskyFactor laplacianFactor;
+  /** \private
+   * \brief Cholesky factor for hmTriDistance::heatFlowDirichlet. */
+  hmCholeskyFactor heatFlowDirichletFactor;
 
-   /** \private
-    * \brief Cholesky factor for hmTriDistance::heatFlowNeumann. */
-   hmCholeskyFactor heatFlowNeumannFactor;
+  /** \private
+   * \brief Stack of start times in seconds with respect to processor time (for profiling). */
+  hmVectorDouble startTimesProcessor;
 
-   /** \private
-    * \brief Cholesky factor for hmTriDistance::heatFlowDirichlet. */
-   hmCholeskyFactor heatFlowDirichletFactor;
-
-   /** \private
-    * \brief Stack of start times in seconds with respect to processor time (for profiling). */
-   hmVectorDouble startTimesProcessor;
-
-   /** \private
-    * \brief Stack of start times in seconds with respect to wall clock time (for profiling). */
-   hmVectorDouble startTimesWallClock;
+  /** \private
+   * \brief Stack of start times in seconds with respect to wall clock time (for profiling). */
+  hmVectorDouble startTimesWallClock;
 
 } hmTriDistance;
-
 
 /* PUBLIC METHODS ====================================================== */
 
@@ -151,7 +151,7 @@ typedef struct hmTriDistance {
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceInitialize( hmTriDistance* distance );
+void hmTriDistanceInitialize(hmTriDistance* distance);
 
 /** \brief Destructor.
  *
@@ -159,7 +159,7 @@ void hmTriDistanceInitialize( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceDestroy( hmTriDistance* distance );
+void hmTriDistanceDestroy(hmTriDistance* distance);
 
 /** \brief Estimates a good value for the duration of heat flow.
  *
@@ -171,7 +171,7 @@ void hmTriDistanceDestroy( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceEstimateTime( hmTriDistance* distance );
+void hmTriDistanceEstimateTime(hmTriDistance* distance);
 
 /** \brief Specifies boundary conditions.
  *
@@ -192,8 +192,7 @@ void hmTriDistanceEstimateTime( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceSetBoundaryConditions( hmTriDistance* distance,
-                                         double boundaryConditions );
+void hmTriDistanceSetBoundaryConditions(hmTriDistance* distance, double boundaryConditions);
 
 /** \brief Performs precomputation required for distance computation.
  *
@@ -205,7 +204,7 @@ void hmTriDistanceSetBoundaryConditions( hmTriDistance* distance,
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceBuild( hmTriDistance* distance );
+void hmTriDistanceBuild(hmTriDistance* distance);
 
 /** \brief Rebuilds data structures for a new flow time parameter \f$t\f$.
  *
@@ -217,8 +216,7 @@ void hmTriDistanceBuild( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceUpdateTime( hmTriDistance* distance,
-                              double time );
+void hmTriDistanceUpdateTime(hmTriDistance* distance, double time);
 
 /** \brief Updates the distance function using the current source set \f$\gamma\f$.
  *
@@ -226,8 +224,7 @@ void hmTriDistanceUpdateTime( hmTriDistance* distance,
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceUpdate( hmTriDistance* distance );
-
+void hmTriDistanceUpdate(hmTriDistance* distance);
 
 /* PRIVATE METHODS ===================================================== */
 
@@ -249,7 +246,7 @@ void hmTriDistanceUpdate( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceSolveHeatEquation( hmTriDistance* distance );
+void hmTriDistanceSolveHeatEquation(hmTriDistance* distance);
 
 /** \private
  * \brief Computes the scalar potential of the distance function.
@@ -265,7 +262,7 @@ void hmTriDistanceSolveHeatEquation( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceComputePotential( hmTriDistance* distance );
+void hmTriDistanceComputePotential(hmTriDistance* distance);
 
 /** \private
  * \brief Solves a Poisson equation.
@@ -282,7 +279,7 @@ void hmTriDistanceComputePotential( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceSolvePoissonEquation( hmTriDistance* distance );
+void hmTriDistanceSolvePoissonEquation(hmTriDistance* distance);
 
 /** \private
  * \brief Builds matrices used for distance computation.
@@ -291,7 +288,7 @@ void hmTriDistanceSolvePoissonEquation( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceBuildMatrices( hmTriDistance* distance );
+void hmTriDistanceBuildMatrices(hmTriDistance* distance);
 
 /** \private
  * \brief Prefactors matrices used for distance computation.
@@ -300,7 +297,7 @@ void hmTriDistanceBuildMatrices( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceFactorMatrices( hmTriDistance* distance );
+void hmTriDistanceFactorMatrices(hmTriDistance* distance);
 
 /** \private
  * \brief Starts timing a subroutine.
@@ -314,7 +311,7 @@ void hmTriDistanceFactorMatrices( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceStartTiming( hmTriDistance* distance );
+void hmTriDistanceStartTiming(hmTriDistance* distance);
 
 /** \private
  * \brief Stops timing a subroutine.
@@ -329,8 +326,6 @@ void hmTriDistanceStartTiming( hmTriDistance* distance );
  * \memberof hmTriDistance
  *
  */
-void hmTriDistanceStopTiming( hmTriDistance* distance,
-                              const char* label );
+void hmTriDistanceStopTiming(hmTriDistance* distance, const char* label);
 
 #endif /* LIBGEODESIC_HMTRIDISTANCE_H */
-
