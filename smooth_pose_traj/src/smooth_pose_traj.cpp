@@ -1,3 +1,21 @@
+/**
+ * @file smooth_pose_traj.cpp
+ * @copyright Copyright (c) 2020, Southwest Research Institute
+ *
+ * @par License
+ * Software License Agreement (Apache License)
+ * @par
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * @par
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
@@ -5,9 +23,9 @@
 #include <smooth_pose_traj/smooth_pose_traj.hpp>
 #include <eigen3/Eigen/Eigen>
 
-namespace SmoothPoseTraj
+namespace smooth_pose_traj
 {
-bool SmoothPoseTraj::qnormalize(geometry_msgs::Pose& P)
+void SmoothPoseTraj::qnormalize(geometry_msgs::Pose& P)
 {
   Eigen::Quaterniond Q(P.orientation.w, P.orientation.x, P.orientation.y, P.orientation.z);
   Q.normalize();
@@ -15,7 +33,6 @@ bool SmoothPoseTraj::qnormalize(geometry_msgs::Pose& P)
   P.orientation.y = Q.y();
   P.orientation.z = Q.z();
   P.orientation.w = Q.w();
-  return (true);
 }  // end qnormalize()
 
 geometry_msgs::Pose SmoothPoseTraj::interpPose(const geometry_msgs::Pose& P1,
@@ -34,66 +51,66 @@ geometry_msgs::Pose SmoothPoseTraj::interpPose(const geometry_msgs::Pose& P1,
   P.orientation.y = (1 - alpha) * P1.orientation.y + alpha * P2.orientation.y;
   P.orientation.z = (1 - alpha) * P1.orientation.z + alpha * P2.orientation.z;
   P.orientation.w = (1 - alpha) * P1.orientation.w + alpha * P2.orientation.w;
-  if (qnormalize(P) == false)
-  {
-    printf("normalize failed inside intermpPose()\n");
-  }
+
+  // Normalize Quaternion
+  qnormalize(P);
+
   return (P);
 }
 geometry_msgs::Pose SmoothPoseTraj::getNPtAveragePose(const geometry_msgs::PoseArray& input_poses,
                                                       int pose_index,
                                                       int n_pts)
 {
-  size_t n = input_poses.poses.size();
-  geometry_msgs::Pose P;
-  P.position.x = 0;
-  P.position.y = 0;
-  P.position.z = 0;
-  P.orientation.x = 0;
-  P.orientation.y = 0;
-  P.orientation.z = 0;
-  P.orientation.w = 0;
+  int n = static_cast<int>(input_poses.poses.size());
+  geometry_msgs::Pose p;
+  p.position.x = 0;
+  p.position.y = 0;
+  p.position.z = 0;
+  p.orientation.x = 0;
+  p.orientation.y = 0;
+  p.orientation.z = 0;
+  p.orientation.w = 0;
 
   if (pose_index == 0 || pose_index == n - 1)
-    return (input_poses.poses[pose_index]);
+    return (input_poses.poses[static_cast<std::size_t>(pose_index)]);
 
   int total = 0;
-  size_t n_each_side = n_pts / 2;
+  int n_each_side = n_pts / 2;
   int start = pose_index - n_each_side;
   int stop = pose_index + n_each_side;
   if (start < 0)
     start = 0;
   if (stop > n)
     stop = n;
-  for (size_t i = start; i < stop; i++)
+  for (size_t i = static_cast<size_t>(start); i < static_cast<size_t>(stop); i++)
   {
-    P.position.x += input_poses.poses[i].position.x;
-    P.position.y += input_poses.poses[i].position.y;
-    P.position.z += input_poses.poses[i].position.z;
-    P.orientation.x += input_poses.poses[i].orientation.x;
-    P.orientation.y += input_poses.poses[i].orientation.y;
-    P.orientation.z += input_poses.poses[i].orientation.z;
-    P.orientation.w += input_poses.poses[i].orientation.w;
+    p.position.x += input_poses.poses[i].position.x;
+    p.position.y += input_poses.poses[i].position.y;
+    p.position.z += input_poses.poses[i].position.z;
+    p.orientation.x += input_poses.poses[i].orientation.x;
+    p.orientation.y += input_poses.poses[i].orientation.y;
+    p.orientation.z += input_poses.poses[i].orientation.z;
+    p.orientation.w += input_poses.poses[i].orientation.w;
     total++;
   }
-  P.position.x = P.position.x / total;
-  P.position.y = P.position.y / total;
-  P.position.z = P.position.z / total;
-  P.orientation.x = P.orientation.x / total;
-  P.orientation.y = P.orientation.y / total;
-  P.orientation.z = P.orientation.z / total;
-  P.orientation.w = P.orientation.w / total;
+  p.position.x = p.position.x / total;
+  p.position.y = p.position.y / total;
+  p.position.z = p.position.z / total;
+  p.orientation.x = p.orientation.x / total;
+  p.orientation.y = p.orientation.y / total;
+  p.orientation.z = p.orientation.z / total;
+  p.orientation.w = p.orientation.w / total;
 
-  return (P);
+  return (p);
 }
 
-SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, const double& point_spacing)
+SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, double point_spacing)
   : point_spacing_(point_spacing)
 {
   // fit spline to each component
   std::vector<double> x, y, z, qx, qy, qz, qw;
-  size_t n = input_poses.poses.size();
-  max_t_ = (double)(n - 2);
+  int n = static_cast<int>(input_poses.poses.size());
+  max_t_ = static_cast<double>(n - 2);
 
   // Its a mess to handle all the short path cases. Here I just inserted extra points so the spline will run.
   if (n == 2)  // insert 3 extra points equally spaced
@@ -101,14 +118,14 @@ SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, cons
     for (int i = 0; i < 5; i++)
     {
       double alpha = i / 4;
-      geometry_msgs::Pose P = interpPose(input_poses.poses[0], input_poses.poses[1], alpha);
-      x.push_back(P.position.x);
-      y.push_back(P.position.y);
-      z.push_back(P.position.z);
-      qx.push_back(P.orientation.x);
-      qy.push_back(P.orientation.y);
-      qz.push_back(P.orientation.z);
-      qw.push_back(P.orientation.w);
+      geometry_msgs::Pose p = interpPose(input_poses.poses[0], input_poses.poses[1], alpha);
+      x.push_back(p.position.x);
+      y.push_back(p.position.y);
+      z.push_back(p.position.z);
+      qx.push_back(p.orientation.x);
+      qy.push_back(p.orientation.y);
+      qz.push_back(p.orientation.z);
+      qw.push_back(p.orientation.w);
     }
   }
   else if (n == 3)  // insert one point between each pair to make 5
@@ -116,26 +133,26 @@ SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, cons
     for (int i = 0; i < 3; i++)
     {
       double alpha = i / 2;
-      geometry_msgs::Pose P = interpPose(input_poses.poses[0], input_poses.poses[1], alpha);
-      x.push_back(P.position.x);
-      y.push_back(P.position.y);
-      z.push_back(P.position.z);
-      qx.push_back(P.orientation.x);
-      qy.push_back(P.orientation.y);
-      qz.push_back(P.orientation.z);
-      qw.push_back(P.orientation.w);
+      geometry_msgs::Pose p = interpPose(input_poses.poses[0], input_poses.poses[1], alpha);
+      x.push_back(p.position.x);
+      y.push_back(p.position.y);
+      z.push_back(p.position.z);
+      qx.push_back(p.orientation.x);
+      qy.push_back(p.orientation.y);
+      qz.push_back(p.orientation.z);
+      qw.push_back(p.orientation.w);
     }
     for (int i = 1; i < 3; i++)
     {
       double alpha = i / 2;
-      geometry_msgs::Pose P = interpPose(input_poses.poses[1], input_poses.poses[2], alpha);
-      x.push_back(P.position.x);
-      y.push_back(P.position.y);
-      z.push_back(P.position.z);
-      qx.push_back(P.orientation.x);
-      qy.push_back(P.orientation.y);
-      qz.push_back(P.orientation.z);
-      qw.push_back(P.orientation.w);
+      geometry_msgs::Pose p = interpPose(input_poses.poses[1], input_poses.poses[2], alpha);
+      x.push_back(p.position.x);
+      y.push_back(p.position.y);
+      z.push_back(p.position.z);
+      qx.push_back(p.orientation.x);
+      qy.push_back(p.orientation.y);
+      qz.push_back(p.orientation.z);
+      qw.push_back(p.orientation.w);
     }
   }
   else if (n == 4)  // here we add a point between every pair and get 7 total points
@@ -143,68 +160,61 @@ SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, cons
     for (int i = 0; i < 3; i++)
     {
       double alpha = i / 2;
-      geometry_msgs::Pose P = interpPose(input_poses.poses[0], input_poses.poses[1], alpha);
-      x.push_back(P.position.x);
-      y.push_back(P.position.y);
-      z.push_back(P.position.z);
-      qx.push_back(P.orientation.x);
-      qy.push_back(P.orientation.y);
-      qz.push_back(P.orientation.z);
-      qw.push_back(P.orientation.w);
+      geometry_msgs::Pose p = interpPose(input_poses.poses[0], input_poses.poses[1], alpha);
+      x.push_back(p.position.x);
+      y.push_back(p.position.y);
+      z.push_back(p.position.z);
+      qx.push_back(p.orientation.x);
+      qy.push_back(p.orientation.y);
+      qz.push_back(p.orientation.z);
+      qw.push_back(p.orientation.w);
     }
     for (int i = 1; i < 3; i++)
     {
       double alpha = i / 2;
-      geometry_msgs::Pose P = interpPose(input_poses.poses[1], input_poses.poses[2], alpha);
-      x.push_back(P.position.x);
-      y.push_back(P.position.y);
-      z.push_back(P.position.z);
-      qx.push_back(P.orientation.x);
-      qy.push_back(P.orientation.y);
-      qz.push_back(P.orientation.z);
-      qw.push_back(P.orientation.w);
+      geometry_msgs::Pose p = interpPose(input_poses.poses[1], input_poses.poses[2], alpha);
+      x.push_back(p.position.x);
+      y.push_back(p.position.y);
+      z.push_back(p.position.z);
+      qx.push_back(p.orientation.x);
+      qy.push_back(p.orientation.y);
+      qz.push_back(p.orientation.z);
+      qw.push_back(p.orientation.w);
     }
     for (int i = 1; i < 3; i++)
     {
       double alpha = i / 2;
-      geometry_msgs::Pose P = interpPose(input_poses.poses[2], input_poses.poses[3], alpha);
-      x.push_back(P.position.x);
-      y.push_back(P.position.y);
-      z.push_back(P.position.z);
-      qx.push_back(P.orientation.x);
-      qy.push_back(P.orientation.y);
-      qz.push_back(P.orientation.z);
-      qw.push_back(P.orientation.w);
+      geometry_msgs::Pose p = interpPose(input_poses.poses[2], input_poses.poses[3], alpha);
+      x.push_back(p.position.x);
+      y.push_back(p.position.y);
+      z.push_back(p.position.z);
+      qx.push_back(p.orientation.x);
+      qy.push_back(p.orientation.y);
+      qz.push_back(p.orientation.z);
+      qw.push_back(p.orientation.w);
     }
   }
   else  // 5 or more, and the spline works fine, just add all the points
   {
-    for (size_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-      geometry_msgs::Pose P = getNPtAveragePose(input_poses, i, 9);
-      x.push_back(P.position.x);
-      y.push_back(P.position.y);
-      z.push_back(P.position.z);
-      qx.push_back(P.orientation.x);
-      qy.push_back(P.orientation.y);
-      qz.push_back(P.orientation.z);
-      qw.push_back(P.orientation.w);
+      geometry_msgs::Pose p = getNPtAveragePose(input_poses, i, 9);
+      x.push_back(p.position.x);
+      y.push_back(p.position.y);
+      z.push_back(p.position.z);
+      qx.push_back(p.orientation.x);
+      qy.push_back(p.orientation.y);
+      qz.push_back(p.orientation.z);
+      qw.push_back(p.orientation.w);
     }
   }
-  sx = new boost::math::cubic_b_spline<double>(x.begin(), x.end(), 0.0, 1.0);
-  sy = new boost::math::cubic_b_spline<double>(y.begin(), y.end(), 0.0, 1.0);
-  sz = new boost::math::cubic_b_spline<double>(z.begin(), z.end(), 0.0, 1.0);
-  sqx = new boost::math::cubic_b_spline<double>(qx.begin(), qx.end(), 0.0, 1.0);
-  sqy = new boost::math::cubic_b_spline<double>(qy.begin(), qy.end(), 0.0, 1.0);
-  sqz = new boost::math::cubic_b_spline<double>(qz.begin(), qz.end(), 0.0, 1.0);
-  sqw = new boost::math::cubic_b_spline<double>(qw.begin(), qw.end(), 0.0, 1.0);
-  sx_ = *sx;
-  sy_ = *sy;
-  sz_ = *sz;
-  sqx_ = *sqx;
-  sqy_ = *sqy;
-  sqz_ = *sqz;
-  sqw_ = *sqw;
+  sx_ = boost::math::cubic_b_spline<double>(x.begin(), x.end(), 0.0, 1.0);
+  sy_ = boost::math::cubic_b_spline<double>(y.begin(), y.end(), 0.0, 1.0);
+  sz_ = boost::math::cubic_b_spline<double>(z.begin(), z.end(), 0.0, 1.0);
+  sqx_ = boost::math::cubic_b_spline<double>(qx.begin(), qx.end(), 0.0, 1.0);
+  sqy_ = boost::math::cubic_b_spline<double>(qy.begin(), qy.end(), 0.0, 1.0);
+  sqz_ = boost::math::cubic_b_spline<double>(qz.begin(), qz.end(), 0.0, 1.0);
+  sqw_ = boost::math::cubic_b_spline<double>(qw.begin(), qw.end(), 0.0, 1.0);
 
   Eigen::Vector3d pi(sx_(0.0), sy_(0), sz_(0));
   total_distance_ = 0.0;
@@ -218,8 +228,9 @@ SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, cons
 
 bool SmoothPoseTraj::process(geometry_msgs::PoseArray& output_poses, double point_spacing)
 {
-  if (point_spacing == -1.0)
+  if (point_spacing < 0)
     point_spacing = point_spacing_;
+
   output_poses.poses.clear();
 
   // add start pose
@@ -328,4 +339,4 @@ geometry_msgs::Pose SmoothPoseTraj::getPoseAtCrowDistance(double& t, double poin
   return (P);
 }  // end getPoseAtDistance
 
-}  // end of namespace SmoothPoseTraj
+}  // namespace smooth_pose_traj
