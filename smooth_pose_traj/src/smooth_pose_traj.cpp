@@ -104,13 +104,27 @@ geometry_msgs::Pose SmoothPoseTraj::getNPtAveragePose(const geometry_msgs::PoseA
   return (p);
 }
 
-SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, double point_spacing)
+SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses,
+                               double point_spacing,
+                               bool keep_xsign)
   : point_spacing_(point_spacing)
+  , keep_xsign_(keep_xsign)
+  , align_sign_(1)
 {
   // fit spline to each component
   std::vector<double> x, y, z, qx, qy, qz, qw;
   int n = static_cast<int>(input_poses.poses.size());
   max_t_ = static_cast<double>(n - 2);
+
+  if (keep_xsign_)
+  {
+    Eigen::Vector3d start_x_axis = Eigen::Quaterniond(input_poses.poses[0].orientation.w, input_poses.poses[0].orientation.x, input_poses.poses[0].orientation.y, input_poses.poses[0].orientation.z).toRotationMatrix().col(0);
+    Eigen::Vector3d start_dir = Eigen::Vector3d(input_poses.poses[1].position.x - input_poses.poses[0].position.x,
+                                                input_poses.poses[1].position.y - input_poses.poses[0].position.y,
+                                                input_poses.poses[1].position.z - input_poses.poses[0].position.z).normalized();
+
+    align_sign_ = (start_x_axis.dot(start_dir) < 0) ? -1 : 1;
+  }
 
   // Its a mess to handle all the short path cases. Here I just inserted extra points so the spline will run.
   if (n == 2)  // insert 3 extra points equally spaced
@@ -271,33 +285,25 @@ bool SmoothPoseTraj::align_x_to_next(geometry_msgs::PoseArray& poses)
     Eigen::Matrix3d R = Q.toRotationMatrix();
 
     // keep normal as z axis
-    Eigen::Vector3d z_axis(R(0, 2), R(1, 2), R(2, 2));
+    Eigen::Vector3d z_axis = R.col(2); //R(0, 2), R(1, 2), R(2, 2));
 
     // compute x to point from point i to point i+1
     if (i < poses.poses.size() - 1)  // last point keeps previous x axis
     {
-      x_axis = Eigen::Vector3d(poses.poses[i + 1].position.x - poses.poses[i].position.x,
-                               poses.poses[i + 1].position.y - poses.poses[i].position.y,
-                               poses.poses[i + 1].position.z - poses.poses[i].position.z);
-      x_axis = x_axis - z_axis.dot(x_axis) * x_axis;
-      x_axis.normalize();
+      x_axis = align_sign_ * Eigen::Vector3d(poses.poses[i + 1].position.x - poses.poses[i].position.x,
+                                             poses.poses[i + 1].position.y - poses.poses[i].position.y,
+                                             poses.poses[i + 1].position.z - poses.poses[i].position.z).normalized();
     }
 
     // compute y = z-cross-x
-    Eigen::Vector3d y_axis = z_axis.cross(x_axis);
-    y_axis.normalize();
+    Eigen::Vector3d y_axis = z_axis.cross(x_axis).normalized();
+    x_axis = y_axis.cross(z_axis).normalized();
     z_axis.normalize();
 
     // form rotation matrix from the three vectors
-    R(0, 0) = x_axis(0);
-    R(0, 1) = y_axis(0);
-    R(0, 2) = z_axis(0);
-    R(1, 0) = x_axis(1);
-    R(1, 1) = y_axis(1);
-    R(1, 2) = z_axis(1);
-    R(2, 0) = x_axis(2);
-    R(2, 1) = y_axis(2);
-    R(2, 2) = z_axis(2);
+    R.col(0) = x_axis;
+    R.col(1) = y_axis;
+    R.col(2) = z_axis;
 
     // convert rotation matrix to quat
     Eigen::Quaterniond Q2(R);
