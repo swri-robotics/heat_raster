@@ -109,6 +109,7 @@ void HeatSurfacePlanner::planPaths(const shape_msgs::Mesh& mesh,
 
   THP.compute(&distance_, local_source_indices);
 
+  // copy THP.pose_arrays into paths
   for (int i = 0; i < (int)THP.pose_arrays_.size(); i++)
   {
     geometry_msgs::PoseArray PA;
