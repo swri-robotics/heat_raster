@@ -14,7 +14,12 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   heat_msgs
   smooth_pose_traj
+  pcl_ros
+  visualization_msgs
+  geometric_shapes
 )
+
+find_package(PCL 1.9 REQUIRED COMPONENTS visualization)
 
 find_package(VTK REQUIRED NO_MODULE)
 if(VTK_FOUND AND ("${VTK_VERSION}" VERSION_LESS 7.1))
@@ -34,6 +39,10 @@ catkin_package(
     heat_msgs
     roscpp
     smooth_pose_traj
+    pcl_ros
+    pcl
+    visualization_msgs
+    geometric_shapes
   DEPENDS
     VTK
     libgeodesic
@@ -44,6 +53,8 @@ include_directories(include
   ${Boost_INCLUDE_DIRS}
   ${LAPACK_INCLUDE_DIRS}
   ${VTK_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
   )
 
 add_executable(heat_surface_plan_server
@@ -58,16 +69,27 @@ target_link_libraries(heat_surface_plan_server
   libgeodesic::libgeodesic_cpp
 )
 
+add_executable(pcl_pc_to_mesh
+    src/pcl_pc_to_mesh.cpp
+)
+
+target_link_libraries(pcl_pc_to_mesh
+  ${catkin_LIBRARIES}
+  ${VTK_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
-install(TARGETS  heat_surface_plan_server 
+install(TARGETS  heat_surface_plan_server pcl_pc_to_mesh
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 install(DIRECTORY include/${PROJECT_NAME}/
+    launch
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   PATTERN ".svn" EXCLUDE
 )
+

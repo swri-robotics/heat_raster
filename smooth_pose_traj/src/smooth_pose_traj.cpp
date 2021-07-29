@@ -207,7 +207,7 @@ SmoothPoseTraj::SmoothPoseTraj(const geometry_msgs::PoseArray& input_poses, doub
       qw.push_back(p.orientation.w);
     }
   }
-  max_t_ = static_cast<double>(x.size() - 2);
+  max_t_ = static_cast<double>(x.size() - 1);
 
   sx_ = boost::math::cubic_b_spline<double>(x.begin(), x.end(), 0.0, 1.0);
   sy_ = boost::math::cubic_b_spline<double>(y.begin(), y.end(), 0.0, 1.0);
@@ -261,7 +261,7 @@ bool SmoothPoseTraj::process(geometry_msgs::PoseArray& output_poses, double poin
   if (output_poses.poses.size() < 2)
     output_poses.poses.push_back(getPoseAtCrowDistance(t, point_spacing, max_t_));
 
-  align_x_to_next(output_poses);
+//  align_x_to_next(output_poses);
   return (true);
 }  // end process()
 

@@ -1,0 +1,14 @@
+<launch>
+
+  <node name="pcl_pc_to_mesh" pkg="heat_ros" type="pcl_pc_to_mesh" output="screen" respawn="false" >
+    <param name="in_path" value="/home/cwolfe/heat_method_ws/src/Part Meshes/clouds_to_convert/cloud_06-08.ply" />
+    <param name="out_path" value="/home/cwolfe/heat_method_ws/src/Part Meshes/meshes_from_clouds/subsampled_by_8_mesh_06-17.ply" />
+    <!--param name="filepath" value="/home/cwolfe/heat_method_ws/src/Part Meshes/cloud_traclabs.ply" /-->
+    <!--param name="filepath" value="/home/cwolfe/heat_method_ws/src/Part Meshes/planar_cloud.ply" /-->
+    <!--param name="filepath" value="/home/cwolfe/3d_cloud.ply" /-->
+    <param name="rows" value="1544" />
+    <param name="cols" value="2064" />
+    <param name="sample_size" value="8" />
+  </node>
+
+</launch>

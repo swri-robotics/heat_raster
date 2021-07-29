@@ -26,7 +26,11 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>std_srvs</exec_depend>
-
+  <depend>pcl</depend>
+  <depend>pcl_ros</depend>
+  <depend>visualization_msgs</depend>
+  <depend>geometric_shapes</depend>
+  
   <export>
   </export>
 </package>
