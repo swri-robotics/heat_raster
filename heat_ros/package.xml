@@ -30,8 +30,6 @@
   <depend>pcl_ros</depend>
   <depend>visualization_msgs</depend>
   <depend>geometric_shapes</depend>
-
-  <depend>geometry-central</depend>
   
   <export>
   </export>

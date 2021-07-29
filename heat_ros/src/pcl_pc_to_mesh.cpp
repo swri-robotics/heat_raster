@@ -18,48 +18,8 @@ int main(int argc, char** argv) {
 
     ros::init(argc, argv, "main");
     ros::NodeHandle nh;
-
-
     std::vector<pcl::Vertices> polys;
-//    pcl::Vertices v1, v2;
-//    v1.vertices.push_back(0);
-//    v1.vertices.push_back(1);
-//    v1.vertices.push_back(2);
-//    v2.vertices.push_back(2);
-//    v2.vertices.push_back(3);
-//    v2.vertices.push_back(0);
-
-//    polys.push_back(v1);
-//    polys.push_back(v2);
-
-//    pcl::PointXYZ pt0, pt1, pt2, pt3;
-//    pt0.x=0; pt0.y=0; pt0.z=0;
-//    pt1.x=1; pt1.y=0; pt1.z=0;
-//    pt2.x=0; pt2.y=1; pt2.z=0;
-//    pt3.x=1; pt3.y=1; pt3.z=0;
-
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_(new pcl::PointCloud<pcl::PointXYZ>);
-//    cloud_->push_back(pt0);
-//    cloud_->push_back(pt1);
-//    cloud_->push_back(pt2);
-//    cloud_->push_back(pt3);
-
     pcl::PolygonMesh mesh;
-
-////    sensor_msgs::PointCloud2 sensor_cloud_;
-//    ros::Publisher cloud_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZ>>("cloud", 1);
-////    pcl::toROSMsg(*cloud_, sensor_cloud_);
-////    cloud_->header.stamp = ros::Time::now();
-//    cloud_->header.frame_id = "map";
-//    cloud_pub.publish(*cloud_);
-//    ros::Rate rate(0.2);
-//    while (ros::ok()){
-////      cloud_.header.stamp = ros::Time::now();
-//      cloud_pub.publish(*cloud_);
-//      rate.sleep();
-//      ROS_INFO("publish");
-//    }
-
 
     std::string in_path;
     std::string out_path;
@@ -89,12 +49,10 @@ int main(int argc, char** argv) {
     ROS_INFO_STREAM("number of points = " << cloud->size());
     int index;
     int num_valid_pts = 0;
-//    for (int i=0; i<cloud->size(); i++){
     for (int i=0; i<reduced_rows; i++){
       for (int j=0; j<reduced_cols ; j++){
         index = i*cols*sample_size + j*sample_size;
         pcl::PointXYZ pt = cloud->at(index);
-//        ROS_INFO_STREAM("x=" << pt.x <  <", y="<<pt.y<<", z="<<pt.z);
         if (pt.x!=0 && pt.y!=0 && pt.z!=0){
           pt.x /= 1000.0;
           pt.y /= 1000.0;
@@ -146,9 +104,6 @@ int main(int argc, char** argv) {
       }
     }
 
-//    pcl::PLYWriter writer;
-//    writer.write("/home/cwolfe/heat_method_ws/src/Part Meshes/small_reduced_blade_cloud_06-08.ply", *reduced_cloud);
-
     ROS_INFO_STREAM("finish TRIANGLES. total num = " << num_triangles << ", num_discarded = " << num_discarded_triangles);
 
     pcl::PCLPointCloud2::Ptr cloud_blob(new pcl::PCLPointCloud2);
@@ -157,7 +112,6 @@ int main(int argc, char** argv) {
     mesh.polygons = polys;
     mesh.cloud = *cloud_blob;
 
-//    std::string ply_filename("/home/cwolfe/heat_method_ws/src/Part Meshes/small_reduced_blade_mesh_06-08.ply");
     pcl::io::savePLYFile(out_path, mesh);
 
     ros::Publisher cloud_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZ>>("cloud", 1);
@@ -169,24 +123,4 @@ int main(int argc, char** argv) {
       rate.sleep();
       ROS_INFO("publish");
     }
-
-//    std::tie(mesh, geometry) = makeSurfaceMeshAndGeometry(reduced_vMat, reduced_fMat);
-
-//    sensor_msgs::PointCloud2 cloud_;
-//    ros::Publisher cloud_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZ>>("cloud", 1);
-//    pcl::toROSMsg(*cloud, cloud_);
-//    cloud->header.stamp = ros::Time::now();
-//    cloud->header.frame_id = "map";
-//    cloud_pub.publish(*cloud);
-//    ros::Rate rate(0.2);
-//    while (ros::ok()){
-//      cloud.header.stamp = ros::Time::now();
-//      cloud_pub.publish(*cloud);
-//      rate.sleep();
-//      ROS_INFO("publish");
-//    }
-
-
-//    sensor_msgs::PointCloud2 cloud_ros;
-//    pcl::toROSMsg(cloud_ros, cloud);
 }

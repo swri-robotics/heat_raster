@@ -5,7 +5,6 @@ project(heat_ros)
 add_compile_options(-std=c++14)
 
 find_package(libgeodesic REQUIRED)
-find_package(geometry-central REQUIRED)
 
 ## Find catkin macros and libraries
 
@@ -68,7 +67,6 @@ target_link_libraries(heat_surface_plan_server
   ${VTK_LIBRARIES}
   libgeodesic::libgeodesic
   libgeodesic::libgeodesic_cpp
-  geometry-central::geometry-central
 )
 
 add_executable(pcl_pc_to_mesh
